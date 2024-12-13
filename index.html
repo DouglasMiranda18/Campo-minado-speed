@@ -16,8 +16,10 @@
         }
 
         .campo-minado-container {
-            display: flex;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 40px repeat(10, 60px) 40px; /* Coluna para números e quadrados */
+            grid-template-rows: 40px repeat(10, 60px) 40px; /* Linha para letras e quadrados */
+            grid-gap: 5px;
         }
 
         .campo-minado {
@@ -49,7 +51,6 @@
 
         .coluna-letra, .coluna-numero {
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             font-weight: bold;
@@ -74,11 +75,11 @@
 <body>
 
     <div class="campo-minado-container">
-        <!-- Coluna de Letras -->
-        <div class="coluna-letra" id="colunaLetras"></div>
+        <!-- Coluna de Letras (acima) -->
+        <div class="coluna-letra"></div>
         <!-- Campo Minado -->
         <div class="campo-minado" id="campoMinado"></div>
-        <!-- Coluna de Números -->
+        <!-- Coluna de Números (ao lado direito) -->
         <div class="coluna-numero" id="colunaNumeros"></div>
     </div>
     <div class="mensagem" id="mensagem"></div>
@@ -91,7 +92,7 @@
 
         const campoMinado = document.getElementById("campoMinado");
         const mensagem = document.getElementById("mensagem");
-        const colunaLetras = document.getElementById("colunaLetras");
+        const colunaLetras = document.querySelector(".coluna-letra");
         const colunaNumeros = document.getElementById("colunaNumeros");
 
         let quadradosAtivos = [];
@@ -114,7 +115,7 @@
                 campoMinado.appendChild(quadrado);
             }
 
-            // Adicionar as letras na coluna lateral
+            // Adicionar as letras na coluna superior
             for (let i = 0; i < 10; i++) {
                 const letra = String.fromCharCode(65 + i);  // Letras de A a J
                 const colunaLetra = document.createElement("div");
@@ -123,7 +124,7 @@
                 colunaLetras.appendChild(colunaLetra);
             }
 
-            // Adicionar os números na coluna lateral
+            // Adicionar os números na coluna lateral direita
             for (let i = 1; i <= 10; i++) {
                 const numero = document.createElement("div");
                 numero.classList.add("coluna-numero");
