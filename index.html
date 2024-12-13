@@ -70,7 +70,6 @@
     <div class="campo-minado-container" id="campoMinadoContainer">
         <!-- Será preenchido pelo script -->
     </div>
-    <div class="mensagem" id="mensagem"></div>
 
     <script>
         const folgasDia31 = 14;
@@ -78,7 +77,6 @@
         const totalQuadrados = 100; // 10x10 grid
         const tamanhoGrid = 10;
         const container = document.getElementById("campoMinadoContainer");
-        const mensagem = document.getElementById("mensagem");
         
         let quadradosDescobertos = 0;
 
@@ -138,11 +136,7 @@
                 quadradosDescobertos++;
             } else {
                 quadrado.classList.add("tente-novamente");
-                quadrado.innerText = "+1 Vez";
-            }
-
-            if (quadradosDescobertos === (folgasDia31 + folgasDia24)) {
-                mensagem.innerText = "Você encontrou todos os dias 24 e 31! Parabéns!";
+                quadrado.innerText = "X";
             }
         }
 
