@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campo Minado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .campo-minado {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-gap: 5px;
+        }
+
+        .quadrado {
+            width: 50px;
+            height: 50px;
+            background-color: #ccc;
+            border: 1px solid #888;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .quadrado.ativo {
+            background-color: #fff;
+        }
+
+        .quadrado.tente-novamente {
+            background-color: #f2d7d5;
+        }
+
+        .mensagem {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="campo-minado" id="campoMinado"></div>
+    <div class="mensagem" id="mensagem"></div>
+
+    <script>
+        // Definição do número de folgas para os dias 31 e 24
+        const folgasDia31 = 14;
+        const folgasDia24 = 13;
+        const totalQuadrados = 64;
+
+        const campoMinado = document.getElementById("campoMinado");
+        const mensagem = document.getElementById("mensagem");
+
+        let quadradosAtivos = [];
+        let quadradosDescobertos = 0;
+
+        // Função para inicializar o campo minado
+        function inicializarCampo(dia) {
+            const folgas = (dia === 31) ? folgasDia31 : folgasDia24;
+            quadradosAtivos = [];
+            quadradosDescobertos = 0;
+
+            // Criar os quadrados
+            campoMinado.innerHTML = '';  // Limpar campo minado anterior
+            for (let i = 0; i < totalQuadrados; i++) {
+                const quadrado = document.createElement("div");
+                quadrado.classList.add("quadrado");
+                quadrado.dataset.id = i;
+
+                quadrado.addEventListener("click", () => revelarQuadrado(quadrado));
+
+                campoMinado.appendChild(quadrado);
+            }
+
+            // Adicionar as folgas (quadros não ativos)
+            let indexFolgas = 0;
+            while (indexFolgas < folgas) {
+                let randIndex = Math.floor(Math.random() * totalQuadrados);
+                if (!quadradosAtivos.includes(randIndex)) {
+                    quadradosAtivos.push(randIndex);
+                    indexFolgas++;
+                }
+            }
+
+            // Adicionar mensagem inicial
+            mensagem.innerText = `Dia ${dia}: Clique nos quadrados para tentar revelar as folgas!`;
+        }
+
+        // Função para revelar um quadrado
+        function revelarQuadrado(quadrado) {
+            const id = parseInt(quadrado.dataset.id);
+            
+            if (quadradosAtivos.includes(id)) {
+                quadrado.classList.add("ativo");
+                quadrado.innerText = "Folga";
+                quadradosDescobertos++;
+            } else {
+                quadrado.classList.add("tente-novamente");
+                quadrado.innerText = "Tente novamente";
+            }
+
+            // Verificar se o jogo acabou
+            if (quadradosDescobertos === (folgasDia31 + folgasDia24)) {
+                mensagem.innerText = "Você encontrou todas as folgas! Parabéns!";
+            }
+        }
+
+        // Inicializar o campo minado para o dia 31
+        inicializarCampo(31);
+
+    </script>
+</body>
+</html>
