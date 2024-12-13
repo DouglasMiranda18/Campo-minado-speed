@@ -67,6 +67,7 @@
     <script>
         const folgasDia31 = 3;
         const folgasDia24 = 3;
+        const ganhouAbraco = 3;
         const totalQuadrados = 25; // 5x5 grid
         const tamanhoGrid = 5;
         const container = document.getElementById("campoMinadoContainer");
@@ -102,14 +103,20 @@
                 }
             }
 
-            // Distribuir dias 24 e 31 aleatoriamente
+            // Distribuir dias 24 e 31 e "ganhou um abraço" aleatoriamente
             let indexFolgas = 0;
-            while (indexFolgas < folgasDia31 + folgasDia24) {
+            while (indexFolgas < folgasDia31 + folgasDia24 + ganhouAbraco) {
                 let randIndex = Math.floor(Math.random() * totalQuadrados);
                 const quadrado = container.querySelectorAll(".quadrado")[randIndex];
 
                 if (!quadrado.dataset.dia) {
-                    quadrado.dataset.dia = indexFolgas < folgasDia24 ? '24' : '31';
+                    if (indexFolgas < folgasDia24) {
+                        quadrado.dataset.dia = '24';
+                    } else if (indexFolgas < folgasDia24 + folgasDia31) {
+                        quadrado.dataset.dia = '31';
+                    } else {
+                        quadrado.dataset.dia = 'Abraço';
+                    }
                     indexFolgas++;
                 }
             }
@@ -121,7 +128,7 @@
             }
 
             const dia = quadrado.dataset.dia;
-            if (dia === "24" || dia === "31") {
+            if (dia === "24" || dia === "31" || dia === "Abraço") {
                 quadrado.classList.add("ativo");
                 quadrado.innerText = dia;
             } else {
