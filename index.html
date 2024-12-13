@@ -13,12 +13,22 @@
             height: 100vh;
             margin: 0;
             background-color: #f4f4f4;
+            flex-direction: column;
+        }
+
+        .campo-minado-container {
+            display: grid;
+            grid-template-columns: auto repeat(10, 60px);
+            grid-template-rows: auto repeat(10, 60px);
+            grid-gap: 5px;
+            align-items: center;
         }
 
         .campo-minado {
             display: grid;
             grid-template-columns: repeat(10, 60px);
             grid-gap: 5px;
+            grid-template-rows: repeat(10, 60px);
         }
 
         .quadrado {
@@ -41,6 +51,14 @@
             background-color: #f2d7d5;
         }
 
+        .coluna-letra {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
         .mensagem {
             text-align: center;
             margin-top: 20px;
@@ -51,7 +69,12 @@
 </head>
 <body>
 
-    <div class="campo-minado" id="campoMinado"></div>
+    <div class="campo-minado-container">
+        <!-- Coluna de Letras -->
+        <div class="coluna-letra"></div>
+        <!-- Campo Minado -->
+        <div class="campo-minado" id="campoMinado"></div>
+    </div>
     <div class="mensagem" id="mensagem"></div>
 
     <script>
@@ -81,6 +104,15 @@
                 quadrado.addEventListener("click", () => revelarQuadrado(quadrado));
 
                 campoMinado.appendChild(quadrado);
+            }
+
+            // Adicionar as letras na coluna lateral superior
+            for (let i = 0; i < 10; i++) {
+                const letra = String.fromCharCode(65 + i);  // Letras de A a J
+                const colunaLetra = document.createElement("div");
+                colunaLetra.classList.add("coluna-letra");
+                colunaLetra.innerText = letra;
+                campoMinado.parentElement.insertBefore(colunaLetra, campoMinado);
             }
 
             // Distribuir as folgas (13 com "24" e 14 com "31")
@@ -130,7 +162,6 @@
 
         // Inicializar o campo minado
         inicializarCampo();
-
     </script>
 </body>
 </html>
