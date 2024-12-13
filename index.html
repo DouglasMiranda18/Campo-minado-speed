@@ -17,16 +17,9 @@
 
         .campo-minado-container {
             display: grid;
-            grid-template-columns: 40px repeat(10, 60px) 40px; /* Coluna para números e quadrados */
-            grid-template-rows: 40px repeat(10, 60px) 40px; /* Linha para letras e quadrados */
+            grid-template-columns: 40px repeat(10, 60px); /* Primeira coluna para letras */
+            grid-template-rows: 40px repeat(10, 60px); /* Primeira linha para números */
             grid-gap: 5px;
-        }
-
-        .campo-minado {
-            display: grid;
-            grid-template-columns: repeat(10, 60px);
-            grid-gap: 5px;
-            grid-template-rows: repeat(10, 60px);
         }
 
         .quadrado {
@@ -74,110 +67,85 @@
 </head>
 <body>
 
-    <div class="campo-minado-container">
-        <!-- Coluna de Letras (acima) -->
-        <div class="coluna-letra"></div>
-        <!-- Campo Minado -->
-        <div class="campo-minado" id="campoMinado"></div>
-        <!-- Coluna de Números (ao lado direito) -->
-        <div class="coluna-numero" id="colunaNumeros"></div>
+    <div class="campo-minado-container" id="campoMinadoContainer">
+        <!-- Será preenchido pelo script -->
     </div>
     <div class="mensagem" id="mensagem"></div>
 
     <script>
-        // Definição do número de quadrados com o dia 24 e 31
         const folgasDia31 = 14;
         const folgasDia24 = 13;
         const totalQuadrados = 100; // 10x10 grid
-
-        const campoMinado = document.getElementById("campoMinado");
+        const tamanhoGrid = 10;
+        const container = document.getElementById("campoMinadoContainer");
         const mensagem = document.getElementById("mensagem");
-        const colunaLetras = document.querySelector(".coluna-letra");
-        const colunaNumeros = document.getElementById("colunaNumeros");
-
-        let quadradosAtivos = [];
+        
         let quadradosDescobertos = 0;
 
-        // Função para inicializar o campo minado
         function inicializarCampo() {
-            quadradosAtivos = [];
-            quadradosDescobertos = 0;
+            container.innerHTML = "";
 
-            // Criar os quadrados
-            campoMinado.innerHTML = '';  // Limpar campo minado anterior
-            for (let i = 0; i < totalQuadrados; i++) {
-                const quadrado = document.createElement("div");
-                quadrado.classList.add("quadrado");
-                quadrado.dataset.id = i;
-
-                quadrado.addEventListener("click", () => revelarQuadrado(quadrado));
-
-                campoMinado.appendChild(quadrado);
-            }
-
-            // Adicionar as letras na coluna superior
-            for (let i = 0; i < 10; i++) {
-                const letra = String.fromCharCode(65 + i);  // Letras de A a J
-                const colunaLetra = document.createElement("div");
-                colunaLetra.classList.add("coluna-letra");
-                colunaLetra.innerText = letra;
-                colunaLetras.appendChild(colunaLetra);
-            }
-
-            // Adicionar os números na coluna lateral direita
-            for (let i = 1; i <= 10; i++) {
+            // Adicionar números na primeira linha
+            container.appendChild(document.createElement("div"));
+            for (let i = 1; i <= tamanhoGrid; i++) {
                 const numero = document.createElement("div");
                 numero.classList.add("coluna-numero");
                 numero.innerText = i;
-                colunaNumeros.appendChild(numero);
+                container.appendChild(numero);
             }
 
-            // Distribuir as folgas (13 com "24" e 14 com "31")
-            let indexFolgas = 0;
-            while (indexFolgas < folgasDia31 + folgasDia24) {
-                let randIndex = Math.floor(Math.random() * totalQuadrados);
-                const quadrado = campoMinado.children[randIndex];
+            // Criar grid com letras e quadrados
+            for (let i = 0; i < tamanhoGrid; i++) {
+                const letra = String.fromCharCode(65 + i); // Letras de A a J
+                const letraDiv = document.createElement("div");
+                letraDiv.classList.add("coluna-letra");
+                letraDiv.innerText = letra;
+                container.appendChild(letraDiv);
 
-                // Não permitir que o mesmo quadrado seja sorteado duas vezes
-                if (!quadrado.dataset.dia) {
-                    if (indexFolgas < folgasDia24) {
-                        quadrado.dataset.dia = '24';
-                    } else {
-                        quadrado.dataset.dia = '31';
-                    }
-                    indexFolgas++;
+                for (let j = 0; j < tamanhoGrid; j++) {
+                    const quadrado = document.createElement("div");
+                    quadrado.classList.add("quadrado");
+                    quadrado.dataset.id = i * tamanhoGrid + j;
+
+                    quadrado.addEventListener("click", () => revelarQuadrado(quadrado));
+
+                    container.appendChild(quadrado);
                 }
             }
 
-            // Adicionar mensagem inicial
-            mensagem.innerText = "Clique nos quadrados para tentar revelar os dias 24 e 31!";
+            // Distribuir dias 24 e 31 aleatoriamente
+            let indexFolgas = 0;
+            while (indexFolgas < folgasDia31 + folgasDia24) {
+                let randIndex = Math.floor(Math.random() * totalQuadrados);
+                const quadrado = container.querySelectorAll(".quadrado")[randIndex];
+
+                if (!quadrado.dataset.dia) {
+                    quadrado.dataset.dia = indexFolgas < folgasDia24 ? '24' : '31';
+                    indexFolgas++;
+                }
+            }
         }
 
-        // Função para revelar um quadrado
         function revelarQuadrado(quadrado) {
-            // Se o quadrado já foi descoberto, não faz nada
             if (quadrado.classList.contains("ativo") || quadrado.classList.contains("tente-novamente")) {
                 return;
             }
 
             const dia = quadrado.dataset.dia;
-            
             if (dia === "24" || dia === "31") {
                 quadrado.classList.add("ativo");
                 quadrado.innerText = dia;
                 quadradosDescobertos++;
             } else {
                 quadrado.classList.add("tente-novamente");
-                quadrado.innerText = "Tente novamente";
+                quadrado.innerText = "X";
             }
 
-            // Verificar se o jogo acabou
             if (quadradosDescobertos === (folgasDia31 + folgasDia24)) {
                 mensagem.innerText = "Você encontrou todos os dias 24 e 31! Parabéns!";
             }
         }
 
-        // Inicializar o campo minado
         inicializarCampo();
     </script>
 </body>
