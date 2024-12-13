@@ -17,8 +17,8 @@
 
         .campo-minado-container {
             display: grid;
-            grid-template-columns: 40px repeat(10, 60px); /* Primeira coluna para letras */
-            grid-template-rows: 40px repeat(10, 60px); /* Primeira linha para números */
+            grid-template-columns: 40px repeat(5, 60px); /* Primeira coluna para letras */
+            grid-template-rows: 40px repeat(5, 60px); /* Primeira linha para números */
             grid-gap: 5px;
         }
 
@@ -56,13 +56,6 @@
         .coluna-numero {
             font-size: 18px;
         }
-
-        .mensagem {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 20px;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -74,12 +67,10 @@
     <script>
         const folgasDia31 = 3;
         const folgasDia24 = 3;
-        const totalQuadrados = 20; // 10x10 grid
-        const tamanhoGrid = 2;
+        const totalQuadrados = 25; // 5x5 grid
+        const tamanhoGrid = 5;
         const container = document.getElementById("campoMinadoContainer");
         
-        let quadradosDescobertos = 0;
-
         function inicializarCampo() {
             container.innerHTML = "";
 
@@ -94,7 +85,7 @@
 
             // Criar grid com letras e quadrados
             for (let i = 0; i < tamanhoGrid; i++) {
-                const letra = String.fromCharCode(65 + i); // Letras de A a J
+                const letra = String.fromCharCode(65 + i); // Letras de A a E
                 const letraDiv = document.createElement("div");
                 letraDiv.classList.add("coluna-letra");
                 letraDiv.innerText = letra;
@@ -133,10 +124,9 @@
             if (dia === "24" || dia === "31") {
                 quadrado.classList.add("ativo");
                 quadrado.innerText = dia;
-                quadradosDescobertos++;
             } else {
                 quadrado.classList.add("tente-novamente");
-                quadrado.innerText = "+1 vez";
+                quadrado.innerText = "X";
             }
         }
 
